@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "674664608234",
+    "project_id": "spobat11",
+    "storage_bucket": "spobat11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674664608234:android:d33060dc29fefa40708293",
+        "android_client_info": {
+          "package_name": "com.spobat_organsation.spobat_11"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhwA83qhdJwDH7_8UakB6bC_0Qb_1ypco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

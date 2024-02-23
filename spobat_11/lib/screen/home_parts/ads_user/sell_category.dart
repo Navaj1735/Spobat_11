@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/Car_access_Crud.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/Car_crud.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/Dog_Crud.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/Laptop_crud.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/Phone_crud.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/bird_crud.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/cat_crud.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/furniture_crud.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/property_crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/Car_access_Crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/Car_crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/Dog_Crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/Laptop_crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/Phone_crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/bird_crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/cat_crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/furniture_crud.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/property_crud.dart';
 
 class Sell_page extends StatelessWidget {
   const Sell_page({super.key});

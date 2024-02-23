@@ -1,14 +1,17 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/donepage.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -16,21 +19,19 @@ void main() async{
           appId: "1:674664608234:android:d33060dc29fefa40708293",
           messagingSenderId: "",
           projectId: "spobat11",
-          storageBucket: "spobat11.appspot.com")
-  );
-  User? user=FirebaseAuth.instance.currentUser;
-  runApp(MaterialApp(
-      home: CaraccessoriesCrud()));
+          storageBucket: "spobat11.appspot.com"));
+  User? user = FirebaseAuth.instance.currentUser;
+  runApp(MaterialApp(home: PhoneCrud()));
 }
 
-class CaraccessoriesCrud extends StatefulWidget {
-  const CaraccessoriesCrud({super.key});
+class PhoneCrud extends StatefulWidget {
+  const PhoneCrud({super.key});
 
   @override
-  State<CaraccessoriesCrud> createState() => _CaraccessoriesCrudState();
+  State<PhoneCrud> createState() => _PhoneCrudState();
 }
 
-class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
+class _PhoneCrudState extends State<PhoneCrud> {
   var brand_ctrl = TextEditingController();
   var title_ctrl = TextEditingController();
   var price_ctrl = TextEditingController();
@@ -40,40 +41,52 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
   FirebaseStorage storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
   List<XFile> _selectedFiles = [];
-  List<String> _arrImageUrls=[];
+
+
   @override
   void initState() {
-    _userCollection = FirebaseFirestore.instance.collection('Car accessories');
+    _userCollection = FirebaseFirestore.instance.collection('products');
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sell Car Accessories',style: GoogleFonts.rubik(color: Colors.blue),),
+        backgroundColor: Colors.white,
+        title: Text(
+          'Sell Smartphone',
+          style: GoogleFonts.rubik(color: Colors.blue),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Container(
-          decoration: BoxDecoration(
-            color: Color(0xD4EEFAFF),
-          ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView(
                 shrinkWrap: true,
-                children:[
+                physics: ScrollPhysics(),
+                children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Text('Brand'),
+                      TextField(
+                        controller: brand_ctrl,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Divider(),
+                      ),
                       Text('Title'),
                       TextField(
                         controller: title_ctrl,
                         decoration: InputDecoration(
-                            hintText: 'Title',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            )
-                        ),
+                                borderRadius: BorderRadius.circular(10))),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -83,12 +96,8 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
                       TextField(
                         controller: price_ctrl,
                         decoration: InputDecoration(
-                            hintText: 'Price',
-                            prefixText: 'INR ',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            )
-                        ),
+                                borderRadius: BorderRadius.circular(10))),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -98,11 +107,8 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
                       TextField(
                         controller: location_ctrl,
                         decoration: InputDecoration(
-                            hintText: 'Location',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            )
-                        ),
+                                borderRadius: BorderRadius.circular(10))),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -110,15 +116,14 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
                       ),
                       Text('Description on product'),
                       TextField(
+                        maxLines: null,
                         controller: desc_ctrl,
                         decoration: InputDecoration(
-                            hintText: 'Description',
-                            helperText: 'Include condition, features and reason for selling',
+                            helperText:
+                            'Include condition, features and reason for selling',
                             helperStyle: TextStyle(fontSize: 10),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            )
-                        ),
+                                borderRadius: BorderRadius.circular(10))),
                       ),
                       SizedBox(height: 10,),
                       Padding(
@@ -175,11 +180,14 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 15,),
+                      SizedBox(
+                        height: 15,
+                      ),
                       ElevatedButton(
-                          onPressed: (){
-                            uploadproduct();
-                            uploadFunction(_selectedFiles);
+                          onPressed: () {
+                            uploadFunction(_selectedFiles, () => Navigator.push(
+                                context, MaterialPageRoute(builder: (context) => completed_page())),
+                            );
                           },
                           child: Text('Upload')),
                     ],
@@ -190,23 +198,6 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
         ),
       ),
     );
-  }
-
-  Future <void> uploadproduct() async{
-    return _userCollection.add({
-      'title': title_ctrl.text,
-      'price':price_ctrl.text,
-      'location':price_ctrl.text,
-      'description':desc_ctrl.text
-    }).then((value) {
-      print('Product uploaded successfully');
-      title_ctrl.clear();
-      price_ctrl.clear();
-      location_ctrl.clear();
-      desc_ctrl.clear();
-    }).catchError((error) {
-      print("Failed to upload $error");
-    });
   }
 
   Future<void> addImage() async {
@@ -225,17 +216,51 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
 
     });
   }
-  Future<String> uploadFile(XFile _image) async{
-    Reference reference=storage.ref().child('Car accessories').child(_image.name);
-    UploadTask uploadTask=reference.putFile(File(_image.path));
-    await uploadTask.whenComplete(() => {
-    });
-    return await reference.getDownloadURL();
+
+  Future<String> uploadFile(XFile _image) async {
+    Reference reference = storage.ref().child('Phone').child(_image.name);
+    UploadTask uploadTask = reference.putFile(File(_image.path));
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
+    String imageUrl = await taskSnapshot.ref.getDownloadURL();
+    return imageUrl;
   }
-  void uploadFunction(List<XFile> _images){
-    for(int i=0;i<_images.length;i++){
-      var imageUrl = uploadFile(_images[i]);
-      _arrImageUrls.add(imageUrl.toString());
+  void uploadFunction(List<XFile> _images, Function() onSuccess) async {
+    List<String> imageUrls = [];
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    Random random = Random();
+    int adId = random.nextInt(9000000) + 1000000;
+    for (int i = 0; i < _images.length; i++) {
+      String imageUrl = await uploadFile(_images[i]);
+      imageUrls.add(imageUrl);
+    }
+
+    // Now that all images are uploaded, add the image URLs to Firestore
+    try {
+      await _userCollection.doc(adId.toString()).set({
+        'UID':uid,
+        'adID':adId,
+        'category':'phone',
+        'brand': brand_ctrl.text,
+        'title': title_ctrl.text,
+        'price': price_ctrl.text,
+        'location': location_ctrl.text,
+        'description': desc_ctrl.text,
+        'postedAt': DateTime.now().microsecondsSinceEpoch,
+        'imageUrls': imageUrls // Add image URLs to Firestore
+      }, SetOptions(merge: true)).then((value) {
+        print('Product uploaded successfully');
+        brand_ctrl.clear();
+        title_ctrl.clear();
+        price_ctrl.clear();
+        location_ctrl.clear();
+        desc_ctrl.clear();
+
+        // Call the success callback function
+        onSuccess();
+      });
+    } catch (error) {
+      print("Failed to upload product: $error");
     }
   }
+
 }

@@ -1,22 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:spobat_11/exstorage/firebase/chat/model/chat_model.dart';
 
 class FireBaseHelper{
-  final FirebaseAuth auth=FirebaseAuth.instance;
+  final auth=FirebaseAuth.instance;
 
-  //user signup
-  Future<String?> registerUser({required String email,required String pass}) async{
-    try{
-      await auth.createUserWithEmailAndPassword(
-        email:email,
-        password:pass,
-      );
-      return email;
-    }on FirebaseAuthException catch (e) {
-      return e.message;
-    }catch(e) {
-      print(e);
-    }
-  }
 
   //signin user
   Future<String?> loginUser({required String email,required String pass}) async{

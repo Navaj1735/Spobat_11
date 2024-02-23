@@ -5,9 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/Intro_Page.dart';
-import 'package:spobat_11/exstorage/firebase/email_pass_auth/home.dart';
-import 'package:spobat_11/exstorage/firebase/email_pass_auth/login.dart';
+import 'package:spobat_11/home_parts/Bottom_nav.dart';
+import 'package:spobat_11/home_parts/productinfo/product_provider.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,11 +17,16 @@ void main() async{
           apiKey: "AIzaSyBhwA83qhdJwDH7_8UakB6bC_0Qb_1ypco",
           appId: "1:674664608234:android:d33060dc29fefa40708293",
           messagingSenderId: "",
-          projectId: "spobat11")
+          projectId: "spobat11",
+          storageBucket: "spobat11.appspot.com"
+      )
   );
   User? user=FirebaseAuth.instance.currentUser;
-  runApp(MaterialApp(
-      home: user==null? Splash_screen() : Home_fire()));
+  runApp(ChangeNotifierProvider(
+    create: (context) => ProductProvider(),
+    child: MaterialApp(
+        home: user==null? Splash_screen() : Botton_navigation()),
+  ));
 }
 class Splash_screen extends StatefulWidget {
   const Splash_screen({super.key});

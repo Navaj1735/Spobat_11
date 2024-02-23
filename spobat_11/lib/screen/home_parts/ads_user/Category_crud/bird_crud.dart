@@ -1,17 +1,16 @@
-import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:spobat_11/home_parts/ads_user/Category_crud/donepage.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/donepage.dart';
 
-void main() async {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -19,19 +18,21 @@ void main() async {
           appId: "1:674664608234:android:d33060dc29fefa40708293",
           messagingSenderId: "",
           projectId: "spobat11",
-          storageBucket: "spobat11.appspot.com"));
-  User? user = FirebaseAuth.instance.currentUser;
-  runApp(MaterialApp(home: PhoneCrud()));
+          storageBucket: "spobat11.appspot.com")
+  );
+  User? user=FirebaseAuth.instance.currentUser;
+  runApp(MaterialApp(
+      home: BirdCrud()));
 }
 
-class PhoneCrud extends StatefulWidget {
-  const PhoneCrud({super.key});
+class BirdCrud extends StatefulWidget {
+  const BirdCrud({super.key});
 
   @override
-  State<PhoneCrud> createState() => _PhoneCrudState();
+  State<BirdCrud> createState() => _BirdCrudState();
 }
 
-class _PhoneCrudState extends State<PhoneCrud> {
+class _BirdCrudState extends State<BirdCrud> {
   var brand_ctrl = TextEditingController();
   var title_ctrl = TextEditingController();
   var price_ctrl = TextEditingController();
@@ -41,20 +42,17 @@ class _PhoneCrudState extends State<PhoneCrud> {
   FirebaseStorage storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
   List<XFile> _selectedFiles = [];
-  List<String> _arrImageUrls=[];
-
   @override
   void initState() {
-    _userCollection = FirebaseFirestore.instance.collection('Smartphone');
+    _userCollection = FirebaseFirestore.instance.collection('products');
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Sell Smartphone',
+          'Sell Birds',
           style: GoogleFonts.rubik(color: Colors.blue),
         ),
         centerTitle: true,
@@ -69,17 +67,6 @@ class _PhoneCrudState extends State<PhoneCrud> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Brand'),
-                TextField(
-                  controller: brand_ctrl,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Divider(),
-                ),
                 Text('Title'),
                 TextField(
                   controller: title_ctrl,
@@ -171,7 +158,7 @@ class _PhoneCrudState extends State<PhoneCrud> {
                           return Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Image.file(
-                                File(_selectedFiles[index].path),
+                              File(_selectedFiles[index].path),
                               fit: BoxFit.cover,
                             ),
                           );
@@ -184,10 +171,9 @@ class _PhoneCrudState extends State<PhoneCrud> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      uploadproduct();
-                      uploadFunction(_selectedFiles);
-                      Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => completed_page()));
+                      uploadFunction(_selectedFiles, () => Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => completed_page())),
+                      );
                     },
                     child: Text('Upload')),
               ],
@@ -197,27 +183,6 @@ class _PhoneCrudState extends State<PhoneCrud> {
       ),
     );
   }
-
-
-  Future<void> uploadproduct() async {
-    return _userCollection.add({
-      'brand': brand_ctrl.text,
-      'title': title_ctrl.text,
-      'price': price_ctrl.text,
-      'location': price_ctrl.text,
-      'description': desc_ctrl.text
-    }).then((value) {
-      print('Product uploaded successfully');
-      brand_ctrl.clear();
-      title_ctrl.clear();
-      price_ctrl.clear();
-      location_ctrl.clear();
-      desc_ctrl.clear();
-    }).catchError((error) {
-      print("Failed to upload $error");
-    });
-  }
-
 
   Future<void> addImage() async {
     if (_selectedFiles != null) {
@@ -236,17 +201,49 @@ class _PhoneCrudState extends State<PhoneCrud> {
     });
   }
 
-  Future<String> uploadFile(XFile _image) async{
-    Reference reference=storage.ref().child('Phone').child(_image.name);
-    UploadTask uploadTask=reference.putFile(File(_image.path));
-    await uploadTask.whenComplete(() => {
-    });
-    return await reference.getDownloadURL();
+  Future<String> uploadFile(XFile _image) async {
+    Reference reference = storage.ref().child('Bird').child(_image.name);
+    UploadTask uploadTask = reference.putFile(File(_image.path));
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
+    String imageUrl = await taskSnapshot.ref.getDownloadURL();
+    return imageUrl;
   }
-  void uploadFunction(List<XFile> _images){
-    for(int i=0;i<_images.length;i++){
-      var imageUrl = uploadFile(_images[i]);
-      _arrImageUrls.add(imageUrl.toString());
+  void uploadFunction(List<XFile> _images, Function() onSuccess) async {
+    List<String> imageUrls = [];
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    Random random = Random();
+    int adId = random.nextInt(9000000) + 1000000;
+    for (int i = 0; i < _images.length; i++) {
+      String imageUrl = await uploadFile(_images[i]);
+      imageUrls.add(imageUrl);
+    }
+
+    // Now that all images are uploaded, add the image URLs to Firestore
+    try {
+      await _userCollection.add({
+        'UID':uid,
+        'adID':adId,
+        'category':'bird',
+        'brand': brand_ctrl.text,
+        'title': title_ctrl.text,
+        'price': price_ctrl.text,
+        'location': location_ctrl.text,
+        'description': desc_ctrl.text,
+        'postedAt': DateTime.now().microsecondsSinceEpoch,
+        'imageUrls': imageUrls // Add image URLs to Firestore
+      }).then((value) {
+        print('Product uploaded successfully');
+        brand_ctrl.clear();
+        title_ctrl.clear();
+        price_ctrl.clear();
+        location_ctrl.clear();
+        desc_ctrl.clear();
+
+        // Call the success callback function
+        onSuccess();
+      });
+    } catch (error) {
+      print("Failed to upload product: $error");
     }
   }
 }

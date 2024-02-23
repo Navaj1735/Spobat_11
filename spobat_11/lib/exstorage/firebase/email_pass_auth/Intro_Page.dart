@@ -12,7 +12,7 @@ class Intro_page extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/image/STANBY_LOG_REG_BG.png'),
+              image: AssetImage('assets/image/STANBY_ORG_BACK.png'),
           fit: BoxFit.fill)
         ),
         child: Center(

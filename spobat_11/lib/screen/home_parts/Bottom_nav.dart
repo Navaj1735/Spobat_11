@@ -1,14 +1,12 @@
-import 'dart:developer';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:spobat_11/home_parts/ads_user/my_ad/my_ad_category.dart';
-import 'package:spobat_11/home_parts/ads_user/sell_category.dart';
-import 'package:spobat_11/home_parts/chat.dart';
-import 'package:spobat_11/home_parts/home_main.dart';
-import 'package:spobat_11/home_parts/Profile/profile_page.dart';
-import 'package:spobat_11/home_parts/Likelist.dart';
+import 'package:spobat_11/screen/home_parts/Likelist.dart';
+import 'package:spobat_11/screen/home_parts/Profile/profile_page.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/sell_category.dart';
+import 'package:spobat_11/screen/home_parts/chat.dart';
+import 'package:spobat_11/screen/home_parts/home_main.dart';
+import 'package:spobat_11/screen/home_parts/my%20ad%20screen/all/my_ad_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,9 +64,9 @@ class _Botton_navigationState extends State<Botton_navigation> {
             },
           ),
           BottomBarItem(
-            icon:Icon(Icons.favorite_rounded),
-            iconSelected: Icon(Icons.favorite_rounded,color: Colors.blue,),
-            title: 'Likelist',
+            icon:Icon(Icons.shopify_sharp),
+            iconSelected: Icon(Icons.shopify_sharp,color: Colors.blue,),
+            title: 'Buylist',
             dotColor: Colors.blue,
             onTap: (value) {
               setState(() {

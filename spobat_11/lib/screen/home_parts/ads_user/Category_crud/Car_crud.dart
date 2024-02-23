@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spobat_11/screen/home_parts/ads_user/Category_crud/donepage.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,10 +45,10 @@ class _CarCrudState extends State<CarCrud> {
   FirebaseStorage storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
   List<XFile> _selectedFiles = [];
-  List<String> _arrImageUrls=[];
+
   @override
   void initState() {
-    _userCollection= FirebaseFirestore.instance.collection('Car');
+    _userCollection= FirebaseFirestore.instance.collection('products');
   }
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class _CarCrudState extends State<CarCrud> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView(
+              physics: ScrollPhysics(),
               shrinkWrap: true,
               children:[
                 Column(
@@ -252,8 +255,9 @@ class _CarCrudState extends State<CarCrud> {
                   SizedBox(height: 15,),
                   ElevatedButton(
                       onPressed: (){
-                        uploadproduct();
-                        uploadFunction(_selectedFiles);
+                        uploadFunction(_selectedFiles, () => Navigator.push(
+                            context, MaterialPageRoute(builder: (context) => completed_page())),
+                        );
                       },
                       child: Text('Upload')),
                 ],
@@ -264,33 +268,6 @@ class _CarCrudState extends State<CarCrud> {
         ),
       ),
     );
-  }
-
-  Future <void> uploadproduct() async{
-    return _userCollection.add({
-      'brand': brand_ctrl.text,
-      'model':model_ctrl.text,
-      'title': title_ctrl.text,
-      'price':price_ctrl.text,
-      'year':year_ctrl.text,
-      'km/h':km_ctrl.text,
-      'type':type_ctrl.text,
-      'location':price_ctrl.text,
-      'description':desc_ctrl.text
-    }).then((value) {
-      print('Product uploaded successfully');
-      brand_ctrl.clear();
-      title_ctrl.clear();
-      price_ctrl.clear();
-      location_ctrl.clear();
-      desc_ctrl.clear();
-      model_ctrl.clear();
-      year_ctrl.clear();
-      km_ctrl.clear();
-      type_ctrl.clear();
-    }).catchError((error) {
-      print("Failed to upload $error");
-    });
   }
 
   Future<void> addImage() async {
@@ -309,17 +286,58 @@ class _CarCrudState extends State<CarCrud> {
 
     });
   }
-  Future<String> uploadFile(XFile _image) async{
-    Reference reference=storage.ref().child('Car').child(_image.name);
-    UploadTask uploadTask=reference.putFile(File(_image.path));
-    await uploadTask.whenComplete(() => {
-    });
-    return await reference.getDownloadURL();
+
+  Future<String> uploadFile(XFile _image) async {
+    Reference reference = storage.ref().child('Car').child(_image.name);
+    UploadTask uploadTask = reference.putFile(File(_image.path));
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
+    String imageUrl = await taskSnapshot.ref.getDownloadURL();
+    return imageUrl;
   }
-  void uploadFunction(List<XFile> _images){
-    for(int i=0;i<_images.length;i++){
-      var imageUrl = uploadFile(_images[i]);
-      _arrImageUrls.add(imageUrl.toString());
+  void uploadFunction(List<XFile> _images, Function() onSuccess) async {
+    List<String> imageUrls = [];
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    Random random = Random();
+    int adId = random.nextInt(9000000) + 1000000;
+    for (int i = 0; i < _images.length; i++) {
+      String imageUrl = await uploadFile(_images[i]);
+      imageUrls.add(imageUrl);
+    }
+
+    // Now that all images are uploaded, add the image URLs to Firestore
+    try {
+      await _userCollection.add({
+        'UID':uid,
+        'adID':adId,
+        'category':'car',
+        'brand': brand_ctrl.text,
+        'title': title_ctrl.text,
+        'price': price_ctrl.text,
+        'location': location_ctrl.text,
+        'description': desc_ctrl.text,
+        'model':model_ctrl.text,
+        'year':year_ctrl.text,
+        'km':km_ctrl.text,
+        'type':type_ctrl.text,
+        'postedAt':DateTime.now().microsecondsSinceEpoch,
+        'imageUrls': imageUrls // Add image URLs to Firestore
+      }).then((value) {
+        print('Product uploaded successfully');
+        brand_ctrl.clear();
+        title_ctrl.clear();
+        price_ctrl.clear();
+        location_ctrl.clear();
+        desc_ctrl.clear();
+        model_ctrl.clear();
+        year_ctrl.clear();
+        km_ctrl.clear();
+        type_ctrl.clear();
+
+        // Call the success callback function
+        onSuccess();
+      });
+    } catch (error) {
+      print("Failed to upload product: $error");
     }
   }
 }

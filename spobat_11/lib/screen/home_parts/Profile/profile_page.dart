@@ -4,9 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/fire_function.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/login.dart';
 
-class Profile_page extends StatelessWidget {
-  const Profile_page({super.key});
+class Profile_page extends StatefulWidget {
 
+  @override
+  State<Profile_page> createState() => _Profile_pageState();
+}
+
+class _Profile_pageState extends State<Profile_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

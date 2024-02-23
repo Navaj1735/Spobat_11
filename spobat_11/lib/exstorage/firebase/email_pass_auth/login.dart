@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/fire_function.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/home.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/register.dart';
+import 'package:spobat_11/home_parts/Bottom_nav.dart';
 
 
 class Login_fire extends StatelessWidget {
@@ -19,7 +20,7 @@ class Login_fire extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image:AssetImage('assets/image/STANBY_LOG_REG_BG.png'),
+              image:AssetImage('assets/image/STANBY_ORG_BACK.png'),
             fit: BoxFit.fill
           )
         ),
@@ -82,7 +83,7 @@ class Login_fire extends StatelessWidget {
                     FireBaseHelper().loginUser(email: email, pass: pass).then((result) {
                       if(result==null) {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Home_fire()));
+                            MaterialPageRoute(builder: (context) => Botton_navigation()));
                       }else{
                       ScaffoldMessenger.of(context)
                           .showSnackBar(SnackBar(content: Text(result)));

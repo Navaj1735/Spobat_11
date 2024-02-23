@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:spobat_11/home_parts/Bottom_nav.dart';
+import 'package:spobat_11/screen/home_parts/Bottom_nav.dart';
 
 class completed_page extends StatefulWidget {
   const completed_page({super.key});
@@ -23,7 +23,7 @@ class _completed_pageState extends State<completed_page> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Lottie.asset('assets/lottie/uploaddone.json'),
+        child: Lottie.asset('assets/lottie/uploadedsuccess.json'),
       ),
     );
   }

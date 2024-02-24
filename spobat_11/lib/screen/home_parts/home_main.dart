@@ -30,9 +30,11 @@ class Home_main extends StatefulWidget {
 }
 
 class _Home_mainState extends State<Home_main> {
-  final Stream<QuerySnapshot> _usersStream =
-  FirebaseFirestore.instance.collection('products').orderBy('postedAt',descending: true).snapshots();
-  FireBaseHelper _service=FireBaseHelper();
+  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+      .collection('products')
+      .orderBy('postedAt', descending: true)
+      .snapshots();
+  FireBaseHelper _service = FireBaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +49,13 @@ class _Home_mainState extends State<Home_main> {
         elevation: 5,
         actions: [
           Icon(Icons.search_outlined),
-          SizedBox(width: 20,),
+          SizedBox(
+            width: 20,
+          ),
           Icon(Icons.notifications_sharp),
-          SizedBox(width: 20,)
+          SizedBox(
+            width: 20,
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -65,8 +71,7 @@ class _Home_mainState extends State<Home_main> {
               ),
               trailing: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
+                  Navigator.push(context,
                       MaterialPageRoute(builder: (context) => Category_page()));
                 },
                 child: Text('View more...'),
@@ -346,93 +351,105 @@ class _Home_mainState extends State<Home_main> {
                   fontSize: 20),
             ),
             Container(
-                child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: StreamBuilder<QuerySnapshot>(
-                              stream: _usersStream,
-                              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return Center(child: const Text('Something went wrong'));
-                                }
+              child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: _usersStream,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                              child: const Text('Something went wrong'));
+                        }
 
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Center(child: const Text("Loading"));
-                                }
-                                final products = snapshot.data!.docs;
-                                var _provider = Provider.of<ProductProvider>(context);
-                                return InkWell(
-                                  onTap: (){
-                                    Navigator.pushNamed(context, productInfo.id, arguments: {'adId': 'ad123'});
-                                    },
-                                  child: ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: ScrollPhysics(),
-                                      itemCount: products.length,
-                                      itemBuilder: (BuildContext context,int index){
-                                        var productData = products[index].data() as Map<String,dynamic>;
-                                        List<String> imageUrl = List<String>.from(productData['imageUrls']);
-                                        return Card(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(4),
-                                          ),
-                                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: const Text("Loading"));
+                        }
+                        final products = snapshot.data!.docs;
+                        var _provider = Provider.of<ProductProvider>(context);
+                        return InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, productInfo.id,
+                                arguments: {'adId': 'ad123'});
+                          },
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: ScrollPhysics(),
+                              itemCount: products.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var productData = products[index].data()
+                                    as Map<String, dynamic>;
+                                List<String> imageUrl =
+                                    List<String>.from(productData['imageUrls']);
+                                return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets.all(15),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                              Image.network(imageUrl[0],
+                                                  height: 100,
+                                                  width: 100,
+                                                  fit: BoxFit.cover),
+                                              Container(width: 20),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: <Widget>[
-                                                    Image.network(
-                                                        imageUrl[0],
-                                                        height: 100,
-                                                        width: 100,
-                                                        fit: BoxFit.cover
+                                                    Container(height: 5),
+                                                    Text(
+                                                      productData['title'],
+                                                      style: TextStyle(
+                                                          fontSize: 15),
                                                     ),
-                                                    Container(width: 20),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          Container(height: 5),
-                                                          Text(
-                                                              productData['title'],
-                                                            style: TextStyle(fontSize: 15),
-                                                          ),
-                                                          Container(height: 5),
-                                                          Text(
-                                                              'INR '+productData['price'],
-                                                            style: GoogleFonts.roboto(fontSize: 20,color: Colors.red,fontWeight: FontWeight.w700),
-                                                          ),
-                                                          Container(height: 5,),
-                                                          Text(
-                                                            productData["location"],
-                                                            style: TextStyle(
-                                                              color: Colors.grey[500],
-                                                              fontStyle: FontStyle.italic
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                    Container(height: 5),
+                                                    Text(
+                                                      'INR ' +
+                                                          productData['price'],
+                                                      style: GoogleFonts.roboto(
+                                                          fontSize: 20,
+                                                          color: Colors.red,
+                                                          fontWeight:
+                                                              FontWeight.w700),
+                                                    ),
+                                                    Container(
+                                                      height: 5,
+                                                    ),
+                                                    Text(
+                                                      productData["location"],
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.grey[500],
+                                                          fontStyle:
+                                                              FontStyle.italic),
                                                     ),
                                                   ],
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        );
-                                      }
-                                  ),
-                                );
-                              }
-                          )
-                      ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                              }),
+                        );
+                      })),
             )
           ],
         ),
       ),
     );
   }
-
 }

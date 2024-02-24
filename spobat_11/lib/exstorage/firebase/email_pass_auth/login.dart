@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/fire_function.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/home.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/register.dart';
-import 'package:spobat_11/home_parts/Bottom_nav.dart';
+import 'package:spobat_11/screen/home_parts/Bottom_nav.dart';
 
 
 class Login_fire extends StatelessWidget {

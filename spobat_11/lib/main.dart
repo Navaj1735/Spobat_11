@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:spobat_11/exstorage/firebase/email_pass_auth/Intro_Page.dart';
-import 'package:spobat_11/home_parts/Bottom_nav.dart';
-import 'package:spobat_11/home_parts/productinfo/product_provider.dart';
+import 'package:spobat_11/screen/home_parts/Bottom_nav.dart';
+import 'package:spobat_11/screen/home_parts/productinfo/product_provider.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();

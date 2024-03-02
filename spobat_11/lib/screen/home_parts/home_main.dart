@@ -367,11 +367,10 @@ class _Home_mainState extends State<Home_main> {
                           return Center(child: const Text("Loading"));
                         }
                         final products = snapshot.data!.docs;
-                        var _provider = Provider.of<ProductProvider>(context);
                         return InkWell(
                           onTap: () {
-                            Navigator.pushNamed(context, productInfo.id,
-                                arguments: {'adId': 'ad123'});
+                            Navigator.pushReplacement(
+                                context, MaterialPageRoute(builder: (context) => productInfo()));
                           },
                           child: ListView.builder(
                               shrinkWrap: true,
@@ -422,6 +421,12 @@ class _Home_mainState extends State<Home_main> {
                                                           color: Colors.red,
                                                           fontWeight:
                                                               FontWeight.w700),
+                                                    ),
+                                                    Container(
+                                                      height: 5,
+                                                    ),
+                                                    Text(
+                                                        productData['category']
                                                     ),
                                                     Container(
                                                       height: 5,

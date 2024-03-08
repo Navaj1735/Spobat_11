@@ -442,6 +442,9 @@ class _Home_mainState extends State<Home_main> {
                                                   ],
                                                 ),
                                               ),
+                                              Expanded(
+                                                  child: Icon(Icons.favorite_rounded)
+                                              )
                                             ],
                                           ),
                                         ),

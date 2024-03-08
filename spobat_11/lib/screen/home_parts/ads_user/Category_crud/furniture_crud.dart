@@ -235,7 +235,6 @@ class _FurnitureCrudState extends State<FurnitureCrud> {
         'UID':uid,
         'adID':adId,
         'category':'furniture',
-        'brand': brand_ctrl.text,
         'title': title_ctrl.text,
         'price': price_ctrl.text,
         'location': location_ctrl.text,
@@ -244,7 +243,6 @@ class _FurnitureCrudState extends State<FurnitureCrud> {
         'imageUrls': imageUrls // Add image URLs to Firestore
       }).then((value) {
         print('Product uploaded successfully');
-        brand_ctrl.clear();
         title_ctrl.clear();
         price_ctrl.clear();
         location_ctrl.clear();

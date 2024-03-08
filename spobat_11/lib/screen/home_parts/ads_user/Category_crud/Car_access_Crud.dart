@@ -66,6 +66,17 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Text('Brand'),
+                      TextField(
+                        controller: brand_ctrl,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Divider(),
+                      ),
                       Text('Title'),
                       TextField(
                         controller: title_ctrl,
@@ -233,7 +244,7 @@ class _CaraccessoriesCrudState extends State<CaraccessoriesCrud> {
       await _userCollection.add({
         'UID':uid,
         'adID':adId,
-        'category':'caraccessary',
+        'category':'caraccessory',
         'brand': brand_ctrl.text,
         'title': title_ctrl.text,
         'price': price_ctrl.text,

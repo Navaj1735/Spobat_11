@@ -234,8 +234,7 @@ class _PropertyCrudState extends State<PropertyCrud> {
       await _userCollection.add({
         'UID':uid,
         'adID':adId,
-        'category':'furniture',
-        'brand': brand_ctrl.text,
+        'category':'property',
         'title': title_ctrl.text,
         'price': price_ctrl.text,
         'location': location_ctrl.text,
@@ -244,7 +243,6 @@ class _PropertyCrudState extends State<PropertyCrud> {
         'imageUrls': imageUrls // Add image URLs to Firestore
       }).then((value) {
         print('Product uploaded successfully');
-        brand_ctrl.clear();
         title_ctrl.clear();
         price_ctrl.clear();
         location_ctrl.clear();

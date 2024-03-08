@@ -243,7 +243,6 @@ class _DogCrudState extends State<DogCrud> {
         'imageUrls': imageUrls // Add image URLs to Firestore
       }).then((value) {
         print('Product uploaded successfully');
-        brand_ctrl.clear();
         title_ctrl.clear();
         price_ctrl.clear();
         location_ctrl.clear();
